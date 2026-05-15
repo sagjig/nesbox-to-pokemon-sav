@@ -1,18 +1,25 @@
 # nesbox-to-pokemon-sav
-In layman's terms: Convert a NESbox save-state into a Gen 1 Pokémon battery save.
+
+## Overview and disclosures
+In layman's terms: Convert a NESbox save of a Gen 1 Pokémon game into a .sav file, for use with Game Boy emulators, [PkHex](https://projectpokemon.org/home/files/file/1-pkhex/), etc.
+
 In complex terms: Extracts the SRAM data from a NESBox/VBA-like save-state.
 
 Please note that this script was written with assistance from an LLM (namely, Google Gemini). I have checked and rewritten/refactored lines of code as necessary myself, and all research prior to the script was done myself. None of the documentation here was written with an LLM.
 
+I've only tested this with the Flash-based version of NESBox, but any version of it should use the same save-state format.
+
+## Usage
 Usage: `python3 extract_save.py /path/to/nesbox.save`
 
-NESBox's Game Boy emulator uses a seemingly modified version of the VisualBoyAdvance save-state format (version 12). With regard to Pokémon games, this data actually contains the SRAM data (what is used in a typical .sav file). 
 
+## Explanation and instructions
+[NESBox's Game Boy emulator](https://github.com/nesbox/libnesbox/blob/master/src/gb/core/gb/GB.cpp#L3619) uses a seemingly modified version of the [VisualBoyAdvance save-state format](https://github.com/visualboyadvance-m/visualboyadvance-m/blob/master/src/core/gb/gb.cpp#L3529) (version 12). With regard to Pokémon games, this data actually contains the SRAM data (what is used in a typical .sav file). 
 
-This script:
+Thus, this script:
 1. Decompresses the NESBox save from its gz compression, if necessary.
 2. Searches the raw binary for strings of `00 80 00 00`. This should mark the start of SRAM (AKA the .sav) data for a Generation 1 Pokémon game in NESBox/VBA save-state format.
-(If you end up having to do this manually in a hex editor, you'll see this appears a few times. Try to find the `00 80 00 00` near lots of other structured-looking data with `50`s near it. `50` is the string terminator in Gen 1 games).
+(If you end up having to do this manually in a hex editor, you'll see this appears a few times. Try to find the `00 80 00 00` near lots of other structured-looking data with `50`s near it. Per [Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/Character_encoding_(Generation_I)#English), `50` is the English-language string terminator in Gen 1 games).
 3. Extract the next 32 KiB (32,768 bytes) of data, as this is the size of Gen 1 SRAM data.
 4. Output it as a .sav file, named batterysave-originalFilename.sav
 
@@ -20,3 +27,11 @@ For posterity, here's a quick writeup of how to then load the .sav file in VBA a
 - VBA: File>Import>Battery file...>select outputted .sav file. Then, Emulation>Reset.
 - mGBA: File>Load alternative save game...>select outputted .sav file. mGBA should auto-reset for you.
 - Alternatively, or for most other emulators, simply name it the exact same name as your ROM (i.e., if your ROM is named "Pokémon Red (USA).gb", name your save "Pokémon Red (USA).sav"). Then launch or reload the game. The startup screen should show CONTINUE with your save.
+
+
+## Special thanks
+- Bulbapedia for their excellent [Gen 1 savedata breakdown](https://bulbapedia.bulbagarden.net/wiki/Save_data_structure_(Generation_I)) and [Gen 1 character encoding article](https://bulbapedia.bulbagarden.net/wiki/Character_encoding_(Generation_I)#English).
+- [Save File Converter](https://savefileconverter.com/#/utilities/advanced) for the gzip decompressor.
+- [Hexed.it](https://hexed.it/), a very nice online hex-editor.
+- The [NESBox](https://nesbox.com/) developer (particularly for the Flash version)
+- The [VisualBoyAdvance](https://github.com/visualboyadvance-m) team.
