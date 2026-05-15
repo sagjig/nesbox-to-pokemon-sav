@@ -19,7 +19,8 @@ Usage: `python3 extract_save.py /path/to/nesbox.save`
 Thus, this script:
 1. Decompresses the NESBox save from its gz compression, if necessary.
 2. Searches the raw binary for strings of `00 80 00 00`. This should mark the start of SRAM (AKA the .sav) data for a Generation 1 Pokémon game in NESBox/VBA save-state format.
-(If you end up having to do this manually in a hex editor, you'll see this appears a few times. Try to find the `00 80 00 00` near lots of other structured-looking data with `50`s near it. Per [Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/Character_encoding_(Generation_I)#English), `50` is the English-language string terminator in Gen 1 games).
+- If you end up having to do this manually in a hex editor, you'll see this appears a few times. Try to find the `00 80 00 00` near lots of other structured-looking data with `50`s near it. Per [Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/Character_encoding_(Generation_I)#English), `50` is the English-language string terminator in Gen 1 games).
+- 00 80 00 00 is VBA's format saying that the following SRAM data is 32,768 bytes (or, in hexadecimal, `8000` bytes) in size. It's not used by Pokémon saves themselves.
 3. Extract the next 32 KiB (32,768 bytes) of data, as this is the size of Gen 1 SRAM data.
 4. Output it as a .sav file, named batterysave-originalFilename.sav
 
