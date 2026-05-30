@@ -5,7 +5,7 @@ In layman's terms: Convert a NESbox save of a Gen 1 Pokémon game into a .sav fi
 
 In complex terms: Extracts the SRAM data from a NESBox/VBA-like save-state.
 
-Please note that this script was written with assistance from an LLM (namely, Google Gemini). I have checked and rewritten/refactored lines of code as necessary myself, and all research prior to the script was done myself. None of the documentation here was written with an LLM.
+Please note that this script was written with assistance from an LLM (namely, Google Gemini). I have checked and rewritten/refactored lines of code as necessary myself, and all research prior to the script was done myself. None of the documentation in this README was written with an LLM.
 
 I've only tested this with the Flash-based version of NESBox, but any version of it should use the same save-state format.
 
